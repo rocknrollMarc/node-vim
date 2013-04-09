@@ -1,11 +1,32 @@
 " Modeline and Notes {
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+"
+"                    __ _ _____              _
+"         ___ _ __  / _/ |___ /      __   __(_)_ __ ___
+"        / __| '_ \| |_| | |_ \ _____\ \ / /| | '_ ` _ \
+"        \__ \ |_) |  _| |___) |_____|\ V / | | | | | | |
+"        |___/ .__/|_| |_|____/        \_/  |_|_| |_| |_|
+"            |_|
+"
+"   This is the personal .vimrc file of Steve Francia.
+"   While much of it is beneficial for general use, I would
+"   recommend picking out the parts you want and understand.
+"
+"   You can find me at http://spf13.com
 " }
 
 " Environment {
 
     " Basics {
         set nocompatible        " Must be first line
+    " }
+
+    " Windows Compatible {
+        " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
+        " across (heterogeneous) systems easier.
+        if has('win32') || has('win64')
+          set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+        endif
     " }
 
     " Setup Bundle Support {
@@ -48,6 +69,8 @@
     endif
     filetype plugin indent on   " Automatically detect file types.
     syntax on                   " Syntax highlighting
+    set mouse=a                 " Automatically enable mouse usage
+    set mousehide               " Hide the mouse cursor while typing
     scriptencoding utf-8
 
     if has ('x') && has ('gui') " On Linux use + register for copy-paste
@@ -146,7 +169,7 @@
     set scrolloff=3                 " Minimum lines to keep above and below cursor
     set foldenable                  " Auto fold code
     set list
-    set listchars=tab:,.,trail:.,extends:#,nbsp:. " Highlight problematic whitespace
+    set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
 " }
 
@@ -162,7 +185,8 @@
     set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
     "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
     " Remove trailing whitespaces and ^M chars
-    autocmd FileType c,cpp,java,php,javascript,python,twig,xml,yml autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+    autocmd FileType c,cpp,java,go,php,javascript,python,twig,xml,yml autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+    autocmd FileType go autocmd BufWritePre <buffer> Fmt
     autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
 
 " }
@@ -339,7 +363,7 @@
         nmap <leader>nt :NERDTreeFind<CR>
 
         let NERDTreeShowBookmarks=1
-        let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\node_modules', '\.idea']
+        let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
         let NERDTreeChDirMode=0
         let NERDTreeQuitOnOpen=1
         let NERDTreeMouseMode=2
@@ -502,6 +526,11 @@
         if has('conceal')
             set conceallevel=2 concealcursor=i
         endif
+
+        " Disable the neosnippet preview candidate window
+        " When enabled, there can be too much visual noise
+        " especially when splits are used.
+        set completeopt-=preview
     " }
 
     " UndoTree {
